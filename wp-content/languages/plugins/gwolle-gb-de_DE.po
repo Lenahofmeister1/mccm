@@ -2,14 +2,39 @@
 # This file is distributed under the same license as the Plugins - Gwolle Guestbook - Stable (latest release) package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2023-05-17 09:34:02+0000\n"
+"PO-Revision-Date: 2024-09-04 22:45:37+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: GlotPress/4.0.0-beta.2\n"
+"X-Generator: GlotPress/4.0.1\n"
 "Language: de\n"
 "Project-Id-Version: Plugins - Gwolle Guestbook - Stable (latest release)\n"
+
+#: functions/gb-mail.php:397
+msgid "For quick checking this entry, click the next link."
+msgstr "Um diesen Eintrag schnell zu überprüfen, klicke auf den nächsten Link."
+
+#. translators: Log message
+#: functions/gb-log.php:112
+msgid "Entry has been checked by email."
+msgstr "Der Eintrag wurde per E-Mail geprüft."
+
+#: admin/gb-page-gwolle-gb.php:287
+msgid "It also has support for Stop Forum Spam included."
+msgstr "Es bietet auch Unterstützung für Stop Forum Spam."
+
+#: admin/gb-page-gwolle-gb.php:285
+msgid "It supports similar JavaScript spamfilters, like the honeypot and timeout and I think it works really well."
+msgstr "Es unterstützt ähnliche JavaScript-Spamfilter wie Honeypot und Timeout und funktioniert meiner Meinung nach wirklich gut."
+
+#: admin/gb-page-gwolle-gb.php:282
+msgid "Recommended plugin to fight spam in the rest of your WordPress website:"
+msgstr "Empfohlenes Plugin zur Spam-Bekämpfung auf der restlichen WordPress-Website:"
+
+#: admin/gb-page-gwolle-gb.php:32
+msgid "Recommended"
+msgstr "Empfohlen"
 
 #. translators: Commercial Add-On metabox line, email author
 #: add-on/gb-add-on.php:116
@@ -204,6 +229,7 @@ msgid "Like this entry"
 msgstr "Diesen Eintrag liken"
 
 #. Plugin URI of the plugin
+#: gwolle-gb.php
 msgid "https://wordpress.org/plugins/gwolle-gb/"
 msgstr "https://de.wordpress.org/plugins/gwolle-gb/"
 
@@ -236,6 +262,14 @@ msgstr "Erforderlich:"
 #: add-on/gb-add-on.php:130
 msgid "Edit entry:"
 msgstr "Eintrag bearbeiten:"
+
+#: admin/tabs/gb-emailtab.php:47
+msgid "You are not subscribed to email notifications."
+msgstr "Sie haben keine E-Mail-Benachrichtigungen abonniert."
+
+#: admin/tabs/gb-emailtab.php:45
+msgid "You are subscribed to email notifications."
+msgstr "Du hast die E-Mail-Benachrichtigungen abonniert."
 
 #: admin/tabs/gb-emailtab.php:40
 msgid "Subscription status"
@@ -1538,10 +1572,12 @@ msgid "Visit the profile of"
 msgstr "Besuche das Profil von"
 
 #. Author of the plugin
+#: gwolle-gb.php
 msgid "Marcel Pol"
 msgstr "Marcel Pol"
 
 #. Author URI of the plugin
+#: gwolle-gb.php
 msgid "https://zenoweb.nl"
 msgstr "https://zenoweb.nl"
 
@@ -1567,6 +1603,7 @@ msgid "Entry editor"
 msgstr "Eintrag-Editor"
 
 #. Description of the plugin
+#: gwolle-gb.php
 msgid "Gwolle Guestbook is not just another guestbook for WordPress. The goal is to provide an easy and slim way to integrate a guestbook into your WordPress powered site. Don't use your 'comment' section the wrong way - install Gwolle Guestbook and have a real guestbook."
 msgstr "Gwolle Guestbook ist nicht irgendein weiteres Gästebuch für WordPress. Das Ziel ist, eine einfache und schlanke Möglichkeit anzubieten, ein Gästebuch in deine WordPress-Website zu integrieren. Verwende den „Kommentar“-Bereich nicht fälschlich – installiere Gwolle Guestbook, und du hast ein echtes Gästebuch."
 
@@ -2542,7 +2579,7 @@ msgid "I'm sorry, but I wasn't able to import entries from DMSGuestbook successf
 msgstr "Es tut mir leid, aber ich war nicht in der Lage, Einträge aus DMSGuestbook erfolgreich zu importieren."
 
 #. Plugin Name of the plugin
-#: admin/gb-page-gwolle-gb.php:45 frontend/gb-widget.php:23
+#: gwolle-gb.php admin/gb-page-gwolle-gb.php:45 frontend/gb-widget.php:23
 #: functions/gb-privacy.php:63 functions/gb-privacy.php:228
 msgid "Gwolle Guestbook"
 msgstr "Gwolle Guestbook"
@@ -3136,7 +3173,7 @@ msgstr "Neue anzeigen"
 
 #: admin/gb-dashboard-widget.php:151
 msgid "View all"
-msgstr "Alles anzeigen"
+msgstr "Alle anzeigen"
 
 #: admin/gb-dashboard-widget.php:150
 msgid "Refresh"
