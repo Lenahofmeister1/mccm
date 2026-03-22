@@ -3,10 +3,8 @@
  * Shows the overview screen with the widget-like windows.
  */
 
-// No direct calls to this script
-if ( strpos($_SERVER['PHP_SELF'], basename(__FILE__) )) {
-	die('No direct calls allowed!');
-}
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 
 
 /*
@@ -39,7 +37,7 @@ function gwolle_gb_welcome() {
 		add_meta_box('gwolle_gb_addon', esc_html__('The Add-On', 'gwolle-gb'), 'gwolle_gb_overview_addon', 'gwolle_gb_welcome', 'right');
 	} ?>
 
-	<div class="wrap gwolle_gb">
+	<div class="wrap gwolle_gb gwolle-gb">
 		<div id="icon-gwolle-gb"><br /></div>
 		<?php
 		$heading = esc_html__('Gwolle Guestbook', 'gwolle-gb');
@@ -100,7 +98,7 @@ function gwolle_gb_overview() {
 	$count['all']     = gwolle_gb_get_entry_count( array( 'all'   => 'all'   ) );
 	?>
 
-	<div class="table table_content gwolle_gb gwolle-gb-overview">
+	<div class="table table_content gwolle_gb gwolle-gb gwolle-gb-overview">
 		<h3><?php esc_html_e('Overview', 'gwolle-gb'); ?></h3>
 
 		<table>
@@ -108,7 +106,7 @@ function gwolle_gb_overview() {
 				<tr class="gwolle-gb-overview-all">
 					<td>
 						<a href="<?php echo admin_url( 'admin.php?page=' . GWOLLE_GB_FOLDER . '/entries.php&amp;show=all' ); ?>">
-							<?php echo $count['all']; ?>
+							<?php echo $count['all']; ?><span class="screen-reader-text"><?php echo _n( 'Entry total', 'Entries total', $count['all'], 'gwolle-gb' ); ?></span>
 						</a>
 					</td>
 					<td class="colored">
@@ -119,7 +117,7 @@ function gwolle_gb_overview() {
 				<tr class="gwolle-gb-overview-checked">
 					<td>
 						<a href="<?php echo admin_url( 'admin.php?page=' . GWOLLE_GB_FOLDER . '/entries.php&amp;show=checked' ); ?>">
-						<?php echo $count['checked']; ?>
+						<?php echo $count['checked']; ?><span class="screen-reader-text"><?php echo _n( 'Unlocked entry', 'Unlocked entries', $count['checked'], 'gwolle-gb' ); ?></span>
 					</a></td>
 					<td class="colored">
 						<?php echo _n( 'Unlocked entry', 'Unlocked entries', $count['checked'], 'gwolle-gb' ); ?>
@@ -129,7 +127,7 @@ function gwolle_gb_overview() {
 				<tr class="gwolle-gb-overview-unchecked">
 					<td>
 						<a href="<?php echo admin_url( 'admin.php?page=' . GWOLLE_GB_FOLDER . '/entries.php&amp;show=unchecked' ); ?>">
-						<?php echo $count['unchecked']; ?>
+						<?php echo $count['unchecked']; ?><span class="screen-reader-text"><?php echo _n( 'New entry', 'New entries', $count['unchecked'], 'gwolle-gb' ); ?></span>
 					</a></td>
 					<td class="colored">
 						<?php echo _n( 'New entry', 'New entries', $count['unchecked'], 'gwolle-gb' ); ?>
@@ -139,7 +137,7 @@ function gwolle_gb_overview() {
 				<tr class="gwolle-gb-overview-spam">
 					<td>
 						<a href="<?php echo admin_url( 'admin.php?page=' . GWOLLE_GB_FOLDER . '/entries.php&amp;show=spam' ); ?>">
-						<?php echo $count['spam']; ?>
+						<?php echo $count['spam']; ?><span class="screen-reader-text"><?php echo _n( 'Spam entry', 'Spam entries', $count['spam'], 'gwolle-gb' ); ?></span>
 					</a></td>
 					<td class="colored">
 						<?php echo _n( 'Spam entry', 'Spam entries', $count['spam'], 'gwolle-gb' ); ?>
@@ -149,7 +147,7 @@ function gwolle_gb_overview() {
 				<tr class="gwolle-gb-overview-trash">
 					<td>
 						<a href="<?php echo admin_url( 'admin.php?page=' . GWOLLE_GB_FOLDER . '/entries.php&amp;show=trash' ); ?>">
-						<?php echo $count['trash']; ?>
+						<?php echo $count['trash']; ?><span class="screen-reader-text"><?php echo _n( 'Trashed entry', 'Trashed entries', $count['trash'], 'gwolle-gb' ); ?></span>
 					</a></td>
 					<td class="colored">
 						<?php echo _n( 'Trashed entry', 'Trashed entries', $count['trash'], 'gwolle-gb' ); ?>
@@ -302,7 +300,7 @@ function gwolle_gb_overview_help() {
 	<ul class="ul-disc">
 		<li>' . esc_html__('Create a new page.', 'gwolle-gb') . '</li>
 		<li>' . esc_html__('Choose a title and set &quot;[gwolle_gb]&quot; (without the quotes) as the content.', 'gwolle-gb') . '</li>
-		<li>' . esc_html__('Shortcode:', 'gwolle-gb') . ' <input type="text" name="gwolle_gb_shortcode" size="10" value="[gwolle_gb]" id="gwolle_gb_shortcode" /></li>
+		<li><label for="gwolle_gb_shortcode">' . esc_html__('Shortcode:', 'gwolle-gb') . ' <input type="text" name="gwolle_gb_shortcode" size="10" value="[gwolle_gb]" id="gwolle_gb_shortcode" /></label></li>
 	</ul>';
 }
 
@@ -379,6 +377,7 @@ function gwolle_gb_overview_addon() {
 		<li><a href="https://zenoweb.nl/forums/forum/guestbook-add-on/" target="_blank">' . esc_html__( 'Support Forum', 'gwolle-gb' ) . '</a></li>
 		<li><a href="https://zenoweb.nl/reviews/" target="_blank">' . esc_html__( 'Reviews', 'gwolle-gb' ) . '</a></li>
 		<li><a href="https://zenoweb.nl/log-in/" target="_blank">' . esc_html__( 'Log in', 'gwolle-gb' ) . '</a></li>
+		<li><a href="https://zenoweb.nl/register/" target="_blank">' . esc_html__( 'Register', 'gwolle-gb' ) . '</a></li>
 	</ul>
 	';
 	if ( defined( 'GWOLLE_GB_ADDON_VER' ) ) {
@@ -396,7 +395,7 @@ function gwolle_gb_welcome_post() {
 	/* Check Nonce */
 	$verified = false;
 	if ( isset($_POST['gwolle_gb_wpnonce']) ) {
-		$verified = wp_verify_nonce( $_POST['gwolle_gb_wpnonce'], 'gwolle_gb_page_gwolle' );
+		$verified = wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['gwolle_gb_wpnonce'] ) ), 'gwolle_gb_page_gwolle' );
 	}
 	if ( $verified === false ) {
 		gwolle_gb_add_message( '<p>' . esc_html__('The Nonce did not validate. Please reload the page and try again.', 'gwolle-gb') . '</p>', true, false);
@@ -424,7 +423,7 @@ function gwolle_gb_welcome_post() {
 		$user_ids[] = (int) $user_id; // Really add it.
 
 		$user_ids = implode( ',', $user_ids );
-		update_option('gwolle_gb-notifyByMail', $user_ids);
+		update_option( 'gwolle_gb-notifyByMail', $user_ids, true );
 
 		gwolle_gb_add_message( '<p>' . esc_html__('Changes saved.', 'gwolle-gb') . '</p>', false, false);
 	} else if ( ! isset($_POST['notify_by_mail'] ) ) {
@@ -446,7 +445,7 @@ function gwolle_gb_welcome_post() {
 		}
 
 		$user_ids = implode( ',', $user_ids );
-		update_option('gwolle_gb-notifyByMail', $user_ids);
+		update_option( 'gwolle_gb-notifyByMail', $user_ids, true );
 		gwolle_gb_add_message( '<p>' . esc_html__('Changes saved.', 'gwolle-gb') . '</p>', false, false);
 	}
 }

@@ -1,9 +1,8 @@
 <?php
 
-// No direct calls to this script
-if ( strpos($_SERVER['PHP_SELF'], basename(__FILE__) )) {
-	die('No direct calls allowed!');
-}
+
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 
 
 /*
@@ -46,22 +45,22 @@ function get_gwolle_gb_shortcode_widget( $atts ) {
 	}
 
 	// Load Frontend CSS in Footer, only when it's active.
-	wp_enqueue_style('gwolle_gb_frontend_css');
+	gwolle_gb_enqueue();
 
 	$widget_title = esc_html__('Guestbook', 'gwolle-gb');
-	$book_id      = $shortcode_atts['book_id'];
-	$num_entries  = $shortcode_atts['num_entries'];
-	$num_words    = $shortcode_atts['num_words'];
+	$book_id      = (int) $shortcode_atts['book_id'];
+	$num_entries  = (int) $shortcode_atts['num_entries'];
+	$num_words    = (int) $shortcode_atts['num_words'];
 	$postid       = 0;
 
-	$widget_class = 'gwolle_gb_widget gwolle-gb-widget';
+	$widget_class = 'gwolle-gb-widget';
 	$widget_class = apply_filters( 'gwolle_gb_widget_list_class', $widget_class );
 	$widget_item_class = 'gwolle_gb_widget gwolle-gb-widget';
 	$widget_item_class = apply_filters( 'gwolle_gb_widget_item_class', $widget_item_class );
 
 
 	$widget_html = '
-				<div class="gwolle_gb_widget gwolle-gb-widget">';
+				<div class="gwolle-gb-widget">';
 	$widget_html .= apply_filters('widget_title', $widget_title);
 
 	$widget_html .= '

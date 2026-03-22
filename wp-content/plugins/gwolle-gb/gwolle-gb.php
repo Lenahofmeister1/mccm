@@ -1,9 +1,9 @@
 <?php
 /*
 Plugin Name: Gwolle Guestbook
-Plugin URI: https://wordpress.org/plugins/gwolle-gb/
+Plugin URI: https://zenoweb.nl/
 Description: Gwolle Guestbook is not just another guestbook for WordPress. The goal is to provide an easy and slim way to integrate a guestbook into your WordPress powered site. Don't use your 'comment' section the wrong way - install Gwolle Guestbook and have a real guestbook.
-Version: 4.6.2
+Version: 4.10.1
 Author: Marcel Pol
 Author URI: https://zenoweb.nl
 License: GPLv2 or later
@@ -12,7 +12,20 @@ Domain Path: /lang/
 
 
 Copyright 2009 - 2010  Wolfgang Timme  (https://github.com/wtimme)
-Copyright 2014 - 2024  Marcel Pol      (marcel@timelord.nl)
+Copyright 2014 - 2026  Marcel Pol      (marcel@timelord.nl)
+Copyright 2015         dbonovas
+Copyright 2015         haraldreingruber
+Copyright 2017         roots84
+Copyright 2017         dedotombo
+Copyright 2018         therab
+Copyright 2020         robinnatter
+Copyright 2020         ronr1999
+Copyright 2023         slavum
+Copyright 2025         chris0815
+Copyright 2025         cleantalk
+Copyright 2025         alexclassroom
+Copyright 2025         rhialto
+
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -31,7 +44,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 // Plugin Version
-define('GWOLLE_GB_VER', '4.6.2');
+define('GWOLLE_GB_VER', '4.10.1');
 
 
 /*
@@ -83,8 +96,8 @@ define('GWOLLE_GB_VER', '4.6.2');
 /*
  * Definitions
  */
-define('GWOLLE_GB_FOLDER', plugin_basename(dirname(__FILE__)));
-define('GWOLLE_GB_DIR', WP_PLUGIN_DIR . '/' . GWOLLE_GB_FOLDER);
+define('GWOLLE_GB_FOLDER', plugin_basename( __DIR__ ));
+define('GWOLLE_GB_DIR', plugin_dir_path( __FILE__ ));
 define('GWOLLE_GB_URL', plugins_url( '/', __FILE__ ));
 
 

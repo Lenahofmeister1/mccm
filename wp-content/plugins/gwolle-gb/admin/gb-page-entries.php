@@ -3,10 +3,8 @@
  * Displays the guestbook entries in a list.
  */
 
-// No direct calls to this script
-if ( strpos($_SERVER['PHP_SELF'], basename(__FILE__) )) {
-	die('No direct calls allowed!');
-}
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 
 
 /*
@@ -175,7 +173,7 @@ function gwolle_gb_page_entries() {
 	}
 	?>
 
-	<div class="wrap gwolle_gb">
+	<div class="wrap gwolle_gb gwolle-gb">
 		<div id="icon-gwolle-gb"><br /></div>
 		<h1><?php esc_html_e('Guestbook entries', 'gwolle-gb'); ?> (Gwolle Guestbook) - v<?php echo GWOLLE_GB_VER; ?></h1>
 
@@ -254,10 +252,10 @@ function gwolle_gb_page_entries() {
 					<h3><?php esc_html_e('Select one option below, either User ID or Email address', 'gwolle-gb'); ?></h3>
 					<p>
 						<label for="gwolle_gb_user_id" class="text-info"><?php esc_html_e('User ID', 'gwolle-gb'); ?>:<br />
-							<input type="text" name="gwolle_gb_user_id" value="<?php echo esc_attr( $user_id ); ?>" placeholder="<?php esc_html_e('User ID', 'gwolle-gb'); ?>" />
+							<input type="text" id="gwolle_gb_user_id" name="gwolle_gb_user_id" value="<?php echo esc_attr( $user_id ); ?>" placeholder="<?php esc_html_e('User ID', 'gwolle-gb'); ?>" />
 						</label><br />
 						<label for="gwolle_gb_user_email" class="text-info"><?php esc_html_e('User Email', 'gwolle-gb'); ?>:<br />
-							<input type="text" name="gwolle_gb_user_email" value="<?php echo esc_attr( $user_email ); ?>" placeholder="<?php esc_html_e('User Email', 'gwolle-gb'); ?>" />
+							<input type="text" id="gwolle_gb_user_email" name="gwolle_gb_user_email" value="<?php echo esc_attr( $user_email ); ?>" placeholder="<?php esc_html_e('User Email', 'gwolle-gb'); ?>" />
 						</label><br />
 						<input type="submit" name="gb_search_user" id="gb_search_user" class="button button-primary" value="<?php esc_attr_e('Search entries', 'gwolle-gb'); ?>"  />
 					</p><?php
@@ -325,10 +323,13 @@ function gwolle_gb_page_entries() {
 					<thead>
 						<tr>
 							<th scope="col" class="manage-column column-cb check-column">
-								<input name="check-all-top" id="check-all-top" type="checkbox">
+								<label for="check-all-top">
+									<input name="check-all-top" id="check-all-top" type="checkbox">
+								</label>
 							</th>
 							<th scope="col"><?php esc_html_e('Book', 'gwolle-gb');
 								if ($book_id > 0) {
+									?><span class="screen-reader-text"><?php esc_html_e('Book', 'gwolle-gb'); ?></span><?php
 									echo ' ' . (int) $book_id;
 								} ?>
 							</th>
@@ -348,7 +349,9 @@ function gwolle_gb_page_entries() {
 					<tfoot>
 						<tr>
 							<th scope="col" class="manage-column column-cb check-column">
-								<input name="check-all-bottom" id="check-all-bottom" type="checkbox">
+								<label for="check-all-bottom">
+									<input name="check-all-bottom" id="check-all-bottom" type="checkbox">
+								</label>
 							</th>
 							<th scope="col"><?php esc_html_e('Book', 'gwolle-gb');
 								if ($book_id > 0) {
@@ -440,7 +443,7 @@ function gwolle_gb_page_entries() {
 										</td>
 										<td class="book">
 											<span class="book-icon" title="' . esc_html__('Book ID', 'gwolle-gb') . ' ' . $entry->get_book_id() . '">
-												<a href="' . add_query_arg( 'book_id', $entry->get_book_id(), $request_uri ) . '"
+												<a href="' . esc_url( add_query_arg( 'book_id', $entry->get_book_id(), $request_uri ) ) . '"
 													title="' . esc_attr__('Book ID', 'gwolle-gb') . ' ' . $entry->get_book_id() . '">
 													' . $entry->get_book_id() . '
 												</a>
@@ -580,7 +583,7 @@ function gwolle_gb_page_entries_update() {
 
 	/* Check Nonce */
 	if ( isset($_POST['gwolle_gb_wpnonce']) ) {
-		$verified = wp_verify_nonce( $_POST['gwolle_gb_wpnonce'], 'gwolle_gb_page_entries' );
+		$verified = wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['gwolle_gb_wpnonce'] ) ), 'gwolle_gb_page_entries' );
 		if ( $verified === false ) {
 			// Nonce is invalid, so considered spam.
 			gwolle_gb_add_message( '<p>' . esc_html__('The Nonce did not validate. Please reload the page and try again.', 'gwolle-gb') . '</p>', true, false);

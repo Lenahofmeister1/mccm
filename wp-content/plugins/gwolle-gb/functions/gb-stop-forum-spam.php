@@ -6,17 +6,17 @@
  */
 
 
-// No direct calls to this script
-if ( strpos($_SERVER['PHP_SELF'], basename(__FILE__) )) {
-	die('No direct calls allowed!');
-}
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 
 
 /*
  * Check the $entry against Stop Forum Spam service
  *
  * @param object $entry instance of gb_entry class
- * @return bool true or false
+ * @return bool
+ *          - true if the entry is considered spam by stop forum spam
+ *          - false if no spam, or no stop forum spam functionality is found
  *
  * @since 2.3.0
  */

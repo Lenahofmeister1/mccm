@@ -4,20 +4,19 @@
  * Template with function: gwolle_gb_entry_template()
  *
  * By default this file will be loaded from /wp-content/plugins/gwolle-gb-frontend/gwolle_gb-entry.php.
- * If you place it in your childtheme or parenttheme, it will be overridden.
+ * If you place it in your child theme or parent theme, that will override it.
  * Make sure you only return values, and not to use echo statements.
  */
 
 
-// No direct calls to this script
-if ( strpos($_SERVER['PHP_SELF'], basename(__FILE__) )) {
-	die('No direct calls allowed!');
-}
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 
 
 if ( ! function_exists('gwolle_gb_entry_template') ) {
 	/*
-	 * Template file for s single guestbook entry.
+	 * Template file for a single guestbook entry.
+	 * Is used in lists as well.
 	 *
 	 * @param object $entry instance of gwolle_gb_entry.
 	 * @param bool $first true if it is the first entry.
@@ -37,9 +36,9 @@ if ( ! function_exists('gwolle_gb_entry_template') ) {
 		$entry_class .= ' gb-entry_' . $entry->get_id();
 		$entry_class .= ' gb-entry-count_' . $counter;
 		if ( is_int( $counter / 2 ) ) {
-			$entry_class .= ' gwolle_gb_even gwolle-gb-even';
+			$entry_class .= ' gwolle-gb-even';
 		} else {
-			$entry_class .= ' gwolle_gb_uneven gwolle-gb-uneven';
+			$entry_class .= ' gwolle-gb-uneven';
 		}
 		if ( $first === true ) {
 			$entry_class .= ' gwolle-gb-first';
@@ -54,7 +53,7 @@ if ( ! function_exists('gwolle_gb_entry_template') ) {
 		}
 		$entry_class = apply_filters( 'gwolle_gb_entry_class', $entry_class );
 
-		$entry_output .= '<div class="' . $entry_class . '" data-entry_id="' . (int) $entry->get_id() . '">';
+		$entry_output .= '<div class="' . $entry_class . '" id="gb-entry_' . $entry->get_id() . '" data-entry_id="' . (int) $entry->get_id() . '">';
 		$entry_output .= '
 				<article>';
 
@@ -179,7 +178,7 @@ if ( ! function_exists('gwolle_gb_entry_template') ) {
 
 				/* Admin Reply Author */
 				$admin_reply .= '
-						<div class="gb-admin_reply_uid gb-admin-reply-uid">';
+						<div class="gb-admin-reply-uid">';
 				$admin_reply_name = gwolle_gb_is_moderator( $entry->get_admin_reply_uid() );
 				/* Admin Avatar */
 				if ( isset($read_setting['read_aavatar']) && $read_setting['read_aavatar'] === 'true' ) {
@@ -218,6 +217,9 @@ if ( ! function_exists('gwolle_gb_entry_template') ) {
 					$admin_reply_content = gwolle_gb_bbcode_strip($admin_reply_content);
 				}
 				if ( $excerpt_length > 0 ) {
+					$readmore = '... <a href="#" class="gwolle-gb-readmore-admin_reply" title="' . esc_attr__('Expand this admin reply and read more', 'gwolle-gb') . '">' . esc_html__('Read more', 'gwolle-gb') . '</a>';
+					$readless = '... <a href="#" class="gwolle-gb-readless-admin_reply" title="' . esc_attr__('Collapse this admin reply again', 'gwolle-gb') . '">' . esc_html__('Collapse', 'gwolle-gb') . '</a>';
+
 					$admin_reply_excerpt = wp_trim_words( $admin_reply_content, $excerpt_length, $readmore );
 					$admin_reply .= '
 						<div class="gb-admin_reply-excerpt">' . $admin_reply_excerpt . '</div>
@@ -226,7 +228,7 @@ if ( ! function_exists('gwolle_gb_entry_template') ) {
 						</div>';
 				} else {
 					$admin_reply .= '
-						<div class="gb-admin_reply_content gb-admin-reply-content">
+						<div class="gb-admin-reply-content">
 						' . $admin_reply_content . '
 						</div>';
 				}
@@ -245,7 +247,7 @@ if ( ! function_exists('gwolle_gb_entry_template') ) {
 		$gb_metabox = apply_filters( 'gwolle_gb_entry_metabox_lines', '', $entry );
 		if ( $gb_metabox ) {
 			$entry_output .= '
-					<div class="gb-metabox-handle" tabindex="0">' . esc_html__('...', 'gwolle-gb' ) . '<span class="screen-reader-text"> ' . esc_html__('Toggle this metabox.', 'gwolle-gb') . '</span></div>
+					<button type="button" class="gb-metabox-handle" tabindex="0" aria-expanded="false">' . esc_html__('...', 'gwolle-gb' ) . '<span class="screen-reader-text"> ' . esc_html__('Toggle this metabox.', 'gwolle-gb') . '</span></button>
 					<div class="gb-metabox">' .
 						$gb_metabox . '
 					</div>';

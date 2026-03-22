@@ -1,9 +1,8 @@
 <?php
 
-// No direct calls to this script
-if ( strpos($_SERVER['PHP_SELF'], basename(__FILE__) )) {
-	die('No direct calls allowed!');
-}
+
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 
 
 /*
@@ -69,7 +68,7 @@ function gwolle_gb_frontend_read( $shortcode_atts, $shortcode ) {
 
 	/* List view. */
 	if ( (int) $shortcode_atts['num_entries'] > 0 ) {
-		$num_entries = $shortcode_atts['num_entries'];
+		$num_entries = (int) $shortcode_atts['num_entries'];
 	} else {
 		$num_entries = (int) get_option('gwolle_gb-entriesPerPage', 20);
 		$num_entries = (int) apply_filters( 'gwolle_gb_read_num_entries', $num_entries, $shortcode_atts );
@@ -183,7 +182,7 @@ function gwolle_gb_frontend_read( $shortcode_atts, $shortcode ) {
 		$pagination = gwolle_gb_pagination_frontend( $page_num, $pages_total );
 		$output .= $pagination;
 	} else if ( $navigation === 1 ) {
-		$entries_list_class .= ' gwolle_gb_infinite gwolle-gb-infinite';
+		$entries_list_class .= ' gwolle-gb-infinite';
 	}
 	$entries_list_class = apply_filters( 'gwolle_gb_entries_list_class', $entries_list_class );
 

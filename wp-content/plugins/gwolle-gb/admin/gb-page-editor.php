@@ -3,10 +3,8 @@
  * Editor for editing entries and writing admin entries.
  */
 
-// No direct calls to this script
-if ( strpos($_SERVER['PHP_SELF'], basename(__FILE__) )) {
-	die('No direct calls allowed!');
-}
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 
 
 /*
@@ -63,7 +61,7 @@ function gwolle_gb_page_editor() {
 	 * Build the Page and the Form
 	 */
 	?>
-	<div class="wrap gwolle_gb">
+	<div class="wrap gwolle_gb gwolle-gb">
 		<div id="icon-gwolle-gb"><br /></div>
 		<h1><?php echo $section_heading; ?> (Gwolle Guestbook) - v<?php echo GWOLLE_GB_VER; ?></h1>
 
@@ -160,7 +158,9 @@ function gwolle_gb_editor_postbox_content( $entry ) {
  */
 function gwolle_gb_editor_postbox_website( $entry ) {
 	?>
-	<input type="url" name="gwolle_gb_author_website" value="<?php echo esc_attr( gwolle_gb_sanitize_output( $entry->get_author_website() ) ); ?>" id="author_website" />
+	<label for="gwolle_gb_author_website">
+		<input type="url" name="gwolle_gb_author_website" value="<?php echo esc_attr( gwolle_gb_sanitize_output( $entry->get_author_website() ) ); ?>" id="gwolle_gb_author_website" />
+	</label>
 	<p><?php
 		/* translators: %s is a code element */
 		echo sprintf( esc_html__('Example: %shttps://www.example.com/%s', 'gwolle-gb'), '<code>', '</code>' ); ?>
@@ -174,7 +174,9 @@ function gwolle_gb_editor_postbox_website( $entry ) {
  */
 function gwolle_gb_editor_postbox_author_origin( $entry ) {
 	?>
-	<input type="text" name="gwolle_gb_author_origin" class="wp-exclude-emoji" value="<?php echo esc_attr( gwolle_gb_sanitize_output( $entry->get_author_origin() ) ); ?>" id="author_origin" />
+	<label for="gwolle_gb_author_origin">
+		<input type="text" name="gwolle_gb_author_origin" class="wp-exclude-emoji" value="<?php echo esc_attr( gwolle_gb_sanitize_output( $entry->get_author_origin() ) ); ?>" id="gwolle_gb_author_origin" />
+	</label>
 	<?php
 }
 
@@ -185,8 +187,9 @@ function gwolle_gb_editor_postbox_author_origin( $entry ) {
 function gwolle_gb_editor_postbox_admin_reply( $entry ) {
 	$form_setting = gwolle_gb_get_setting( 'form' );
 	?>
-
-	<textarea rows="10" name="gwolle_gb_admin_reply" id="gwolle_gb_admin_reply" class="wp-exclude-emoji"><?php echo esc_textarea( gwolle_gb_sanitize_output( $entry->get_admin_reply(), 'admin_reply' ) ); ?></textarea>
+	<label for="gwolle_gb_admin_reply">
+		<textarea rows="10" name="gwolle_gb_admin_reply" id="gwolle_gb_admin_reply" class="wp-exclude-emoji"><?php echo esc_textarea( gwolle_gb_sanitize_output( $entry->get_admin_reply(), 'admin_reply' ) ); ?></textarea>
+	</label>
 
 	<?php
 	if ( isset($form_setting['form_bbcode_enabled']) && $form_setting['form_bbcode_enabled'] === 'true' ) {
@@ -571,7 +574,7 @@ function gwolle_gb_page_editor_update( $entry ) {
 	/* Check Nonce */
 	$verified = false;
 	if ( isset($_POST['gwolle_gb_wpnonce']) ) {
-		$verified = wp_verify_nonce( $_POST['gwolle_gb_wpnonce'], 'gwolle_gb_page_editor' );
+		$verified = wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['gwolle_gb_wpnonce'] ) ), 'gwolle_gb_page_editor' );
 	}
 	if ( $verified === false ) {
 		// Nonce is invalid.

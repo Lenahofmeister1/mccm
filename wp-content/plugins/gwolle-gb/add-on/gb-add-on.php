@@ -5,10 +5,8 @@
  */
 
 
-// No direct calls to this script
-if ( strpos($_SERVER['PHP_SELF'], basename(__FILE__) )) {
-	die('No direct calls allowed!');
-}
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 
 
 function gwolle_gb_addon_translation_strings() {
@@ -207,8 +205,6 @@ User IP address: %author_ip%
 	/* translators: Settings page, option for uploading of images */
 	esc_html_e('Upload images through the form.', 'gwolle-gb');
 	/* translators: Settings page, option for uploading of images */
-	esc_html_e('Offer uploading of images. This will only be offered for users with the capability `upload_files`, which ususally is limited to Author, Editor and Administrator.', 'gwolle-gb');
-	/* translators: Settings page, option for uploading of images */
 	esc_html_e('Offer uploading of images. This will only be offered for users with the capability `gwolle_gb_upload_files`, which ususally is limited to Author, Editor and Administrator.', 'gwolle-gb');
 	/* translators: Settings page, option for uploading of images */
 	esc_html_e('Images can be added through the form and will be uploaded to the Media Library and added to the content of the entry.', 'gwolle-gb');
@@ -359,7 +355,7 @@ User IP address: %author_ip%
 
 	// function gwolle_gb_addon_upload_media_handler() {
 	/* translators: Return messages for uploading images */
-	esc_html__('Your file is too large.', 'gwolle-gb');
+	sprintf( esc_html__('Your file is too large (Max %d MiB)', 'gwolle-gb'), $allowed_filesize_mib );
 	/* translators: Return messages for uploading images */
 	esc_html__('Your file has the wrong mime type.', 'gwolle-gb');
 	/* translators: Return messages for uploading images */
@@ -367,8 +363,7 @@ User IP address: %author_ip%
 	/* translators: Return messages for uploading images */
 	esc_html__('Something went wrong. Please try again or contact an admin.', 'gwolle-gb');
 	/* translators: Return messages for uploading images */
-	esc_html__('File was uploaded successfully.', 'gwolle-gb');
-
+	esc_html__('File was uploaded successfully and is now added into the content as bbcode.', 'gwolle-gb');
 	// function gwolle_gb_addon_enqueue_frontend()
 	/* translators: Message for uploading images */
 	esc_html__( 'Please select a file before clicking Upload.', 'gwolle-gb' );

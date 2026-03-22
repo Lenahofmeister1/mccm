@@ -1,9 +1,9 @@
 === Gwolle Guestbook ===
-Contributors: Gwolle, mpol
+Contributors: Gwolle, mpol, dbonovas, haraldreingruber, roots84, dedotombo, therab, robinnatter, ronr1999, slavum, chris0815, cleantalk, alexclassroom, rhialto
 Tags: guestbook, guest book, livre d'or, Gästebuch, review
 Requires at least: 4.1
-Tested up to: 6.4
-Stable tag: 4.6.2
+Tested up to: 6.9
+Stable tag: 4.10.1
 License: GPLv2 or later
 Requires PHP: 7.0
 
@@ -367,14 +367,30 @@ Using a theme with AJAX navigation can give issues. Only on the guestbook page i
 So you would need to load it on every page to have it available for the guestbook. You can add the following code to functions.php of your theme:
 
 	<?php
-	function my_gwolle_gb_register() {
-		wp_enqueue_script('gwolle_gb_frontend_js');
-		wp_enqueue_style('gwolle_gb_frontend_css');
-	}
-	add_action('wp_enqueue_scripts', 'my_gwolle_gb_register', 20);
+	add_action('wp_enqueue_scripts', 'gwolle_gb_enqueue', 20);
 	?>
 
 I don't have any experience myself with AJAX themes. If it doesn't work, please contact the theme author.
+
+= My theme has no styling for form fields =
+
+You could use this CSS. Please adapt the colors ;)
+The CSS can be added in Appearance > Customizer > Custom CSS.
+
+	html body div.gwolle-gb input[type="button"],
+	html body div.gwolle-gb input[type="submit"] {
+		color: #fff; /* white */
+		background-color: #f00; /* red */
+		border: 1px solid #0f0; /* green */
+	}
+
+	html body div.gwolle-gb form.gwolle-gb-write div.input input[type="text"],
+	html body div.gwolle-gb form.gwolle-gb-write div.input input[type="email"],
+	html body div.gwolle-gb form.gwolle-gb-write div.input input[type="url"],
+	html body div.gwolle-gb form.gwolle-gb-write div.input textarea,
+	html body div.gwolle-gb form.gwolle-gb-write div.input select {
+		border: 1px solid #0f0; /* green */
+	}
 
 = I use the Autoptimize plugin =
 
@@ -433,6 +449,105 @@ But if you don't use standard comments, you can just as easily use the comment s
 
 
 == Changelog ==
+
+= 4.10.1 =
+* 2026-02-06
+* Remove dependency on jQuery on frontend.
+* Remove gwolle_gb_ajax_callback jQuery callback.
+* Escape key closes metabox.
+* Fix undefined variable in main widget.
+* Change a few class names.
+
+= 4.10.0 =
+* 2025-12-23
+* Remove support for Cleantalk antispam service, merged in their plugin.
+  (since v6.68 released on 13.11.2025).
+* Rewrite most jQuery code into vanilla JavaScript.
+* Use CSS transition for main button of form.
+* Use CSS transition for metabox.
+* Use CSS transition for readmore links.
+* Use button to toggle metabox on frontend.
+* Improve blocklist.
+* Add function gwolle_gb_check_ip_on_blocklist().
+* Always show ajax icon in metabox, even if not logged in.
+* Change a few class names for gwolle-gb-messages.
+* Better sanitizing of settings.
+* Add function gwolle_gb_setting_array_sanitize.
+* Add function gwolle_gb_markitup_replace for backwards compatibility.
+* Use plugin_dir_path instead of WP_PLUGIN_DIR.
+* Verify Nonces correctly.
+* Remove upgrading old options that don't exist anymore.
+* Set autoload explicitly for options.
+* Reset character counter for textarea after submitting new entry.
+* Remove deprecated gwolle_gb_scroll_callback (as jQuery.Callbacks() ).
+* Cleanup old strings for Add-On.
+
+= 4.9.3 =
+* 2025-06-23
+* Fix security issue in BBcode (thanks zer0gh0st (D.Sim) through Wordfence).
+* Use esc_url and wp_kses on BBcode data through url and img.
+* Use preg_replace_callback for a callback function for sanitizing.
+* Add label to admin pages.
+* Add screen-reader-text to main admin pages.
+* Make log messages more consistent (thanks rhialto).
+
+= 4.9.2 =
+* 2025-06-08
+* Add #id again to entries in main shortcode.
+* Add link in widget to the corresponding entry.
+* Fix 'readmore' functionality (broke in 4.9.0).
+
+= 4.9.1 =
+* 2025-05-30
+* Add support for Cleantalk antispam service.
+* Fix missing s in settingspage for cleantalk (thanks alexclassroom).
+* Rewrite small part of jQuery JavaScript to Vanilla JavaScript.
+
+= 4.9.0 =
+* 2025-05-04
+* Deprecate 'gwolle_gb_ajax_callback' as jQuery.Callbacks.
+* Timing and loading order of JavaScript is impossible to manage.
+* Add JavaScript function 'gwolle_gb_frontend_callback_function'.
+
+= 4.8.1 =
+* 2025-03-26
+* Change default setting, disable Nonce spamfilter.
+* Add option to also send notification email with spam entries.
+* Fix heading and notice, show default when empty.
+
+= 4.8.0 =
+* 2025-02-18
+* Add option for Youtube to bbcode.
+* Add function gwolle_gb_bbcode_disabled.
+* Deprecate function gwolle_gb_bbcode_img_disabled.
+* Add filter gwolle_gb_bbcode_youtube_enabled.
+* Add function 'gwolle_gb_get_field_id()'.
+* Fix formfields to have an id attribute, for accessibility (thanks chris0815).
+* Add CSS for loginform to have text label above input field.
+* Take some hints from phpcs.
+* Update strings for Add-On.
+
+= 4.7.2 =
+* 2025-01-22
+* Fix XSS security issue (thanks Peter Thaleikis).
+* Allow html in author_name through filter.
+* Hide invisible elements for screenreaders.
+
+= 4.7.1 =
+* 2024-11-15
+* Better check for parameters in the shortcode.
+
+= 4.7.0 =
+* 2024-10-02
+* Always use utf8mb4 for database tables (requires MySQL 5.5 or higher).
+* Better check for direct access of files.
+* Remove return message about 'too fast', not needed really.
+* Add function and action 'gwolle_gb_enqueue' so people can choose whether to load css or not.
+* Add filter gwolle_gb_enqueue_frontend_css.
+* Add filter gwolle_gb_bbcode_img_enabled.
+* Add function gwolle_gb_bbcode_img_disabled.
+* Also parse (or strip) BBcode in notification mails.
+* Loading plugin translations should be delayed until init action.
 
 = 4.6.2 =
 * 2024-02-09

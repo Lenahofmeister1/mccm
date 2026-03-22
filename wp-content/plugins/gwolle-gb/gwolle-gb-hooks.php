@@ -7,10 +7,8 @@
  */
 
 
-// No direct calls to this script
-if ( strpos($_SERVER['PHP_SELF'], basename(__FILE__) )) {
-	die('No direct calls allowed!');
-}
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 
 
 /*
@@ -37,6 +35,7 @@ function gwolle_gb_init() {
 			gwolle_gb_upgrade();
 		}
 	}
+
 }
 add_action( 'init', 'gwolle_gb_init' );
 
@@ -48,9 +47,11 @@ add_action( 'init', 'gwolle_gb_init' );
  * @since 1.5.2
  */
 function gwolle_gb_activate_new_site( $blog_id ) {
+
 	switch_to_blog( $blog_id );
 	gwolle_gb_install();
 	restore_current_blog();
+
 }
 add_action( 'wpmu_new_blog', 'gwolle_gb_activate_new_site' );
 
@@ -63,9 +64,11 @@ add_action( 'wpmu_new_blog', 'gwolle_gb_activate_new_site' );
  * @since 3.1.5
  */
 function gwolle_gb_wp_initialize_site( $blog ) {
+
 	switch_to_blog( $blog->id );
 	gwolle_gb_install();
 	restore_current_blog();
+
 }
 add_action( 'wp_initialize_site', 'gwolle_gb_wp_initialize_site' );
 
@@ -76,11 +79,8 @@ add_action( 'wp_initialize_site', 'gwolle_gb_wp_initialize_site' );
  */
 function gwolle_gb_register() {
 
-	// Always load jQuery, it's just easier this way.
-	wp_enqueue_script('jquery');
-
 	// Register script for frontend. Load it later.
-	wp_register_script( 'gwolle_gb_frontend_js', GWOLLE_GB_URL . 'frontend/js/gwolle-gb-frontend.js', array( 'jquery' ), GWOLLE_GB_VER, true );
+	wp_register_script( 'gwolle_gb_frontend_js', GWOLLE_GB_URL . 'frontend/js/gwolle-gb-frontend.js', false, GWOLLE_GB_VER, true );
 	$data_to_be_passed = array(
 		'ajax_url'     => admin_url('admin-ajax.php'),
 		'load_message' => /* translators: Infinite Scroll */ esc_html__('Loading more...', 'gwolle-gb'),
@@ -94,8 +94,29 @@ function gwolle_gb_register() {
 
 	// Register style for frontend. Load it later.
 	wp_register_style('gwolle_gb_frontend_css', GWOLLE_GB_URL . 'frontend/css/gwolle-gb-frontend.css', false, GWOLLE_GB_VER,  'all');
+
 }
-add_action('wp_enqueue_scripts', 'gwolle_gb_register');
+add_action( 'wp_enqueue_scripts', 'gwolle_gb_register' );
+
+
+/*
+ * Enqueue styles and scripts.
+ * Enqueue them in the frontend function only when we need them.
+ *
+ * @uses filter gwolle_gb_enqueue_frontend_css, true when css should be loaded. false if not.
+ */
+function gwolle_gb_enqueue() {
+
+	$enqueue_css = apply_filters( 'gwolle_gb_enqueue_frontend_css', true );
+	if ( $enqueue_css ) {
+		wp_enqueue_style('gwolle_gb_frontend_css');
+	}
+
+	wp_enqueue_script('gwolle_gb_frontend_js');
+
+	do_action( 'gwolle_gb_enqueue', $enqueue_css );
+
+}
 
 
 /*
@@ -104,7 +125,8 @@ add_action('wp_enqueue_scripts', 'gwolle_gb_register');
  * @since 3.0.0
  */
 function gwolle_gb_enqueue_markitup() {
-	wp_enqueue_script( 'markitup', GWOLLE_GB_URL . 'frontend/markitup/jquery.markitup.js', 'jquery', GWOLLE_GB_VER, true );
+
+	wp_enqueue_script( 'markitup', GWOLLE_GB_URL . 'frontend/markitup/jquery.markitup.js', array( 'jquery' ), GWOLLE_GB_VER, true );
 	wp_enqueue_style('gwolle_gb_markitup_css', GWOLLE_GB_URL . 'frontend/markitup/style.css', false, GWOLLE_GB_VER,  'screen');
 
 	$data_to_be_passed = array(
@@ -113,6 +135,7 @@ function gwolle_gb_enqueue_markitup() {
 		'bullet'    => /* translators: MarkItUp menu item */ esc_html__('Bulleted List', 'gwolle-gb' ),
 		'numeric'   => /* translators: MarkItUp menu item */ esc_html__('Numeric List', 'gwolle-gb' ),
 		'picture'   => /* translators: MarkItUp menu item */ esc_html__('Picture', 'gwolle-gb' ),
+		'youtube'   => /* translators: MarkItUp menu item */ esc_html__('Youtube', 'gwolle-gb' ),
 		'source'    => /* translators: MarkItUp menu item */ esc_html__('Source', 'gwolle-gb' ),
 		'link'      => /* translators: MarkItUp menu item */ esc_html__('Link', 'gwolle-gb' ),
 		'linktext'  => /* translators: MarkItUp menu item */ esc_html__('Your text to link...', 'gwolle-gb' ),
@@ -120,6 +143,7 @@ function gwolle_gb_enqueue_markitup() {
 		'emoji'     => /* translators: MarkItUp menu item */ esc_html__('Emoji', 'gwolle-gb' ),
 	);
 	wp_localize_script( 'markitup', 'gwolle_gb_localize', $data_to_be_passed );
+
 }
 
 
@@ -127,15 +151,18 @@ function gwolle_gb_enqueue_markitup() {
  * Load Language files for frontend and backend.
  */
 function gwolle_gb_load_lang() {
+
 	load_plugin_textdomain( 'gwolle-gb', false, GWOLLE_GB_FOLDER . '/lang' );
+
 }
-add_action('plugins_loaded', 'gwolle_gb_load_lang');
+add_action( 'init', 'gwolle_gb_load_lang' );
 
 
 /*
  * Add number of unchecked entries to admin bar, if > 0.
  */
 function gwolle_gb_admin_bar_menu( $wp_admin_bar ) {
+
 	if ( ! current_user_can('gwolle_gb_moderate_comments') )
 		return;
 
@@ -167,5 +194,6 @@ function gwolle_gb_admin_bar_menu( $wp_admin_bar ) {
 			'href'  => admin_url('admin.php?page=' . GWOLLE_GB_FOLDER . '/entries.php&amp;show=unchecked'),
 		) );
 	}
+
 }
 add_action( 'admin_bar_menu', 'gwolle_gb_admin_bar_menu', 61 );

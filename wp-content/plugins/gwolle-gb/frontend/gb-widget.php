@@ -5,10 +5,8 @@
  */
 
 
-// No direct calls to this script
-if ( strpos($_SERVER['PHP_SELF'], basename(__FILE__) )) {
-	die('No direct calls allowed!');
-}
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 
 
 if (function_exists('register_sidebar') && class_exists('WP_Widget')) {
@@ -61,7 +59,7 @@ if (function_exists('register_sidebar') && class_exists('WP_Widget')) {
 			// Prepare for SSS Slider. Registers Script with WordPress to wp_footer().
 			$widget_class = 'gwolle_gb_widget gwolle-gb-widget';
 			if ( $slider ) {
-				wp_register_script( 'gwolle_gb_widget_sss', GWOLLE_GB_URL . 'frontend/js/sss/sss.js', 'jquery', GWOLLE_GB_VER, true );
+				wp_register_script( 'gwolle_gb_widget_sss', GWOLLE_GB_URL . 'frontend/js/sss/sss.js', array( 'jquery' ), GWOLLE_GB_VER, true );
 				wp_enqueue_script( 'gwolle_gb_widget_sss' );
 				$widget_class .= ' gwolle_gb_widget_slider gwolle-gb-widget-slider';
 			}
@@ -74,13 +72,14 @@ if (function_exists('register_sidebar') && class_exists('WP_Widget')) {
 
 			$widget_html .= $args['before_widget'];
 			$widget_html .= '
-				<div class="gwolle_gb_widget gwolle-gb-widget">';
+				<div class="gwolle-gb-widget">';
 
 			if ($widget_title !== false) {
 				$widget_html .= $args['before_title'] . apply_filters('widget_title', $widget_title) . $args['after_title'];
 			}
 
 			$link = '';
+			$permalink = '';
 			if ( (int) $postid > 0 ) {
 				$permalink = gwolle_gb_get_permalink( $postid );
 				$link = '
@@ -107,7 +106,7 @@ if (function_exists('register_sidebar') && class_exists('WP_Widget')) {
 							continue;
 						}
 
-						$widget_html .= $this->widget_single_view( $entry, $instance, $widget_item_class, $link );
+						$widget_html .= $this->widget_single_view( $entry, $instance, $widget_item_class, $link, $permalink );
 
 						$counter++;
 					}
@@ -135,7 +134,7 @@ if (function_exists('register_sidebar') && class_exists('WP_Widget')) {
 							continue; // already listed
 						}
 
-						$widget_html .= $this->widget_single_view( $entry, $instance, $widget_item_class, $link );
+						$widget_html .= $this->widget_single_view( $entry, $instance, $widget_item_class, $link, $permalink );
 
 						$counter++;
 					}
@@ -148,7 +147,7 @@ if (function_exists('register_sidebar') && class_exists('WP_Widget')) {
 			// Post the link to the Guestbook.
 			if ( (int) $postid > 0 ) {
 				$widget_html .= '
-					<p class="gwolle_gb_link gwolle-gb-link">
+					<p class="gwolle-gb-link">
 						<a href="' . esc_attr( $permalink ) . '" title="' . esc_attr__('Click here to get to the guestbook.', 'gwolle-gb') . '">' . $link_text . '</a>
 					</p>';
 			}
@@ -163,16 +162,30 @@ if (function_exists('register_sidebar') && class_exists('WP_Widget')) {
 				// Only display widget if there are any entries.
 				echo $widget_html;
 
-				// Load Frontend CSS in Footer, only when it's active.
-				wp_enqueue_style('gwolle_gb_frontend_css');
+				// Load JavaScript and CSS in case we're on a non-guestbook page, load it in footer.
+				gwolle_gb_enqueue();
 			}
 		}
 
-		public function widget_single_view( $entry, $instance, $widget_item_class, $link ) {
+		/*
+		 * Single view for the widget.
+		 *
+		 * @param $entry
+		 * @param $instance
+		 * @param $widget_item_class
+		 * @param $link
+		 * @param $permalink (since 4.9.1)
+		 *
+		 * @return html for the widget view.
+		 *
+		 * @since 4.3.0
+		 */
+		public function widget_single_view( $entry, $instance, $widget_item_class, $link, $permalink = '' ) {
 
 			$name      = (int) esc_attr($instance['name']);
 			$date      = (int) esc_attr($instance['date']);
 			$num_words = (int) esc_attr($instance['num_words']);
+			$entry_id  = (int) $entry->get_id();
 
 			$widget_html = '
 						<li class="' . esc_attr( $widget_item_class ) . '">';
@@ -207,12 +220,15 @@ if (function_exists('register_sidebar') && class_exists('WP_Widget')) {
 				$entry_content = convert_smilies( $entry_content );
 			}
 			$widget_html .= '
-								<span class="gb-entry-content">' . $entry_content . $link;
+								<span class="gb-entry-content">
+								<a href="' . $permalink . '#gb-entry_' . $entry_id . '">' . $entry_content . $link;
 
 			// Use this filter to just add something
 			$widget_html .= apply_filters( 'gwolle_gb_entry_widget_add_content', '', $entry );
 
-			$widget_html .= '</span>';
+			$widget_html .= '
+								</a>
+								</span><br />';
 
 			// Use this filter to just add something
 			$widget_html .= apply_filters( 'gwolle_gb_entry_widget_add_after', '', $entry );

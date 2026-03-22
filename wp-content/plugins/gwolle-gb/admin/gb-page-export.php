@@ -1,14 +1,12 @@
 <?php /*
  *
- *	export.php
- *	Lets the user export guestbook entries to a CSV file.
+ * export.php
+ * Lets the user export guestbook entries to a CSV file.
  *
  */
 
-// No direct calls to this script
-if ( strpos($_SERVER['PHP_SELF'], basename(__FILE__) )) {
-	die('No direct calls allowed!');
-}
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 
 
 /*
@@ -26,11 +24,11 @@ function gwolle_gb_page_export() {
 	 * Build the Page.
 	 */
 	?>
-	<div class="wrap gwolle_gb">
+	<div class="wrap gwolle_gb gwolle-gb">
 		<div id="icon-gwolle-gb"><br /></div>
 		<h1><?php esc_html_e('Export guestbook entries.', 'gwolle-gb'); ?> (Gwolle Guestbook) - v<?php echo GWOLLE_GB_VER; ?></h1>
 
-		<div id="poststuff" class="gwolle_gb_export metabox-holder">
+		<div id="poststuff" class="gwolle_gb_export gwolle-gb-export metabox-holder">
 			<div class="postbox-container">
 				<?php
 				add_meta_box( 'gwolle_gb_export_postbox', esc_html__('Export guestbook entries from Gwolle-GB', 'gwolle-gb'), 'gwolle_gb_export_postbox', 'gwolle_gb_export', 'normal' );
@@ -135,7 +133,7 @@ function gwolle_gb_export_callback() {
 	/* Check Nonce */
 	$verified = false;
 	if ( isset($_POST['gwolle_gb_wpnonce']) ) {
-		$verified = wp_verify_nonce( $_POST['gwolle_gb_wpnonce'], 'gwolle_gb_page_export' );
+		$verified = wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['gwolle_gb_wpnonce'] ) ), 'gwolle_gb_page_export' );
 	}
 	if ( $verified === false ) {
 		// Nonce is invalid.
@@ -300,7 +298,7 @@ function gwolle_gb_export_user_callback() {
 	/* Check Nonce */
 	$verified = false;
 	if ( isset($_POST['gwolle_gb_wpnonce']) ) {
-		$verified = wp_verify_nonce( $_POST['gwolle_gb_wpnonce'], 'gwolle_gb_page_export_user' );
+		$verified = wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['gwolle_gb_wpnonce'] ) ), 'gwolle_gb_page_export_user' );
 	}
 	if ( $verified === false ) {
 		// Nonce is invalid.

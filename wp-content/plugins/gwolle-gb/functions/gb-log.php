@@ -1,10 +1,8 @@
 <?php
 
 
-// No direct calls to this script
-if ( strpos($_SERVER['PHP_SELF'], basename(__FILE__) )) {
-	die('No direct calls allowed!');
-}
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 
 
 /*
@@ -112,13 +110,13 @@ function gwolle_gb_get_log_entries( $entry_id ) {
 		'entry-checked-by-email'      => /* translators: Log message */ esc_html__('Entry has been checked by email.', 'gwolle-gb'),
 		'marked-as-spam'              => /* translators: Log message */ esc_html__('Entry marked as spam.', 'gwolle-gb'),
 		'marked-as-not-spam'          => /* translators: Log message */ esc_html__('Entry marked as not spam.', 'gwolle-gb'),
-		'marked-by-honeypot'          => /* translators: Log message */ esc_html__('Entry marked by the Honeypot.', 'gwolle-gb'),
-		'marked-by-nonce'             => /* translators: Log message */ esc_html__('Entry marked by invalid Nonce.', 'gwolle-gb'),
-		'marked-by-akismet'           => /* translators: Log message */ esc_html__('Entry marked by Akismet.', 'gwolle-gb'),
-		'marked-by-sfs'               => /* translators: Log message */ esc_html__('Entry marked by Stop Forum Spam.', 'gwolle-gb'),
+		'marked-by-honeypot'          => /* translators: Log message */ esc_html__('Entry marked by the Honeypot spamfilter.', 'gwolle-gb'),
+		'marked-by-nonce'             => /* translators: Log message */ esc_html__('Entry marked by the Nonce spamfilter.', 'gwolle-gb'),
+		'marked-by-akismet'           => /* translators: Log message */ esc_html__('Entry marked by the Akismet spamfilter.', 'gwolle-gb'),
+		'marked-by-sfs'               => /* translators: Log message */ esc_html__('Entry marked by the Stop Forum Spam spamfilter.', 'gwolle-gb'),
 		'marked-by-longtext'          => /* translators: Log message */ esc_html__('Entry marked for too long text.', 'gwolle-gb'),
 		'marked-by-linkchecker'       => /* translators: Log message */ esc_html__('Entry marked for too many links.', 'gwolle-gb'),
-		'marked-by-timeout'           => /* translators: Log message */ esc_html__('Entry marked for being submitted too fast.', 'gwolle-gb'),
+		'marked-by-timeout'           => /* translators: Log message */ esc_html__('Entry marked by the Timeout spamfilter.', 'gwolle-gb'),
 		'entry-edited'                => /* translators: Log message */ esc_html__('Entry has been edited.', 'gwolle-gb'),
 		'imported-from-dmsguestbook'  => /* translators: Log message */ esc_html__('Imported from DMSGuestbook', 'gwolle-gb'),
 		'imported-from-wp'            => /* translators: Log message */ esc_html__('Imported from WordPress comments', 'gwolle-gb'),

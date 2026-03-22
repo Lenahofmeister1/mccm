@@ -4,10 +4,8 @@
  */
 
 
-// No direct calls to this script
-if ( strpos($_SERVER['PHP_SELF'], basename(__FILE__) )) {
-	die('No direct calls allowed!');
-}
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 
 
 /*
@@ -18,8 +16,10 @@ if ( strpos($_SERVER['PHP_SELF'], basename(__FILE__) )) {
  * @since 1.4.9
  */
 function gwolle_gb_mail_moderators( $entry ) {
+
+	$notify_with_spam = get_option( 'gwolle_gb-notify-with-spam', 'true');
 	$isspam = $entry->get_isspam();
-	if ( ! $isspam ) {
+	if ( ( $notify_with_spam === 'true' ) || ! $isspam ) {
 		$subscribers = array();
 		$recipients = get_option('gwolle_gb-notifyByMail');
 		if ( is_string( $recipients ) && strlen($recipients) > 0 ) {
@@ -102,14 +102,26 @@ Entry content:
 		} else {
 			$info['status'] = esc_html__('Unchecked', 'gwolle-gb');
 		}
-
+		if ( $entry->get_isspam() ) {
+			$info['status'] .= ', ' . esc_html__('Marked as Spam', 'gwolle-gb');
+		} else {
+			$info['status'] .= ', ' . esc_html__('Not marked as Spam', 'gwolle-gb');
+		}
 		// The last tags are bloginfo-based
 		$mailtags_count = count($mailtags);
 		for ($tagnum = 0; $tagnum < $mailtags_count; $tagnum++) {
 			$tagname = $mailtags["$tagnum"];
 			$mail_body = str_replace('%' . $tagname . '%', $info["$tagname"], $mail_body);
 		}
+
 		$mail_body = gwolle_gb_format_values_for_mail( $mail_body );
+
+		$form_setting = gwolle_gb_get_setting( 'form' );
+		if ( isset($form_setting['form_bbcode_enabled']) && $form_setting['form_bbcode_enabled'] === 'true' ) {
+			$mail_body = gwolle_gb_bbcode_parse( $mail_body );
+		} else {
+			$mail_body = gwolle_gb_bbcode_strip( $mail_body );
+		}
 
 		// Add logging to mail
 		$log_entries = gwolle_gb_get_log_entries( $entry->get_id() );
@@ -202,6 +214,13 @@ Entry content:
 			}
 			$mail_body = gwolle_gb_format_values_for_mail( $mail_body );
 
+			$form_setting = gwolle_gb_get_setting( 'form' );
+			if ( isset($form_setting['form_bbcode_enabled']) && $form_setting['form_bbcode_enabled'] === 'true' ) {
+				$mail_body = gwolle_gb_bbcode_parse( $mail_body );
+			} else {
+				$mail_body = gwolle_gb_bbcode_strip( $mail_body );
+			}
+
 			wp_mail($entry->get_author_email(), $subject, $mail_body, $header);
 
 		}
@@ -281,6 +300,13 @@ Original entry posted on %date%:
 		}
 		$mail_body = gwolle_gb_format_values_for_mail( $mail_body );
 
+		$form_setting = gwolle_gb_get_setting( 'form' );
+		if ( isset($form_setting['form_bbcode_enabled']) && $form_setting['form_bbcode_enabled'] === 'true' ) {
+			$mail_body = gwolle_gb_bbcode_parse( $mail_body );
+		} else {
+			$mail_body = gwolle_gb_bbcode_strip( $mail_body );
+		}
+
 		wp_mail($entry->get_author_email(), $subject, $mail_body, $header);
 
 	}
@@ -356,6 +382,13 @@ Original entry posted on %date%:
 			$mail_body = str_replace('%' . $tagname . '%', $info["$tagname"], $mail_body);
 		}
 		$mail_body = gwolle_gb_format_values_for_mail( $mail_body );
+
+		$form_setting = gwolle_gb_get_setting( 'form' );
+		if ( isset($form_setting['form_bbcode_enabled']) && $form_setting['form_bbcode_enabled'] === 'true' ) {
+			$mail_body = gwolle_gb_bbcode_parse( $mail_body );
+		} else {
+			$mail_body = gwolle_gb_bbcode_strip( $mail_body );
+		}
 
 		wp_mail($entry->get_author_email(), $subject, $mail_body, $header);
 
@@ -434,8 +467,9 @@ function gwolle_gb_gwolle_gb_check_by_email() {
 		die();
 	}
 
-	if ( $entry->get_ischecked() === 0 ) {
+	if ( $entry->get_ischecked() === 0 || $entry->get_isspam() === 1 ) {
 		$entry->set_ischecked( true );
+		$entry->set_isspam( false );
 		$user_id = get_current_user_id(); // returns 0 if no current user
 		$result = $entry->save();
 		if ( $result ) {

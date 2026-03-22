@@ -6,10 +6,8 @@
  */
 
 
-// No direct calls to this script
-if ( strpos($_SERVER['PHP_SELF'], basename(__FILE__) )) {
-	die('No direct calls allowed!');
-}
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 
 
 if (function_exists('register_sidebar') && class_exists('WP_Widget')) {
@@ -81,8 +79,8 @@ if (function_exists('register_sidebar') && class_exists('WP_Widget')) {
 
 			echo $widget_html;
 
-			// Load Frontend CSS in Footer, only when it's active.
-			wp_enqueue_style('gwolle_gb_frontend_css');
+			// Load JavaScript and CSS in case we're on a non-guestbook page, load it in footer.
+			gwolle_gb_enqueue();
 
 		}
 

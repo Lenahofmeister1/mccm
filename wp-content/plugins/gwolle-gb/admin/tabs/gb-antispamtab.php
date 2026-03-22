@@ -3,10 +3,8 @@
  * Settings page for the guestbook
  */
 
-// No direct calls to this script
-if ( strpos($_SERVER['PHP_SELF'], basename(__FILE__) )) {
-	die('No direct calls allowed!');
-}
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 
 
 /*
@@ -63,20 +61,20 @@ function gwolle_gb_page_settingstab_antispam() {
 				<span class="setting-description">
 					<?php esc_html_e('Entries that are marked as spam will be placed in your spam folder by default.', 'gwolle-gb'); ?>
 					<br />
-					<?php esc_html_e('This option will refuse to accept entries marked by Honeypot, Nonce, Link Checker, Form Timeout, Akismet and Stop Forum Spam. Users will see the form again after submit, with an error stating that it is recognized as spam.', 'gwolle-gb'); ?>
+					<?php esc_html_e('This option will refuse to accept entries marked by Honeypot, Nonce, Link Checker, Form Timeout, Akismet, Stop Forum Spam and Cleantalk. Users will see the form again after submit, with an error stating that it is recognized as spam.', 'gwolle-gb'); ?>
 				</span>
 			</td>
 		</tr>
 
 		<tr>
-			<th scope="row"><label for="honeypot"><?php esc_html_e('Honeypot', 'gwolle-gb'); ?></label></th>
+			<th scope="row"><label for="gwolle_gb_honeypot"><?php esc_html_e('Honeypot', 'gwolle-gb'); ?></label></th>
 			<td>
 				<input <?php
 					if (get_option( 'gwolle_gb-honeypot', 'true') === 'true') {
 						echo 'checked="checked"';
 					} ?>
-					type="checkbox" name="honeypot" id="honeypot">
-				<label for="honeypot">
+					type="checkbox" name="gwolle_gb_honeypot" id="gwolle_gb_honeypot">
+				<label for="gwolle_gb_honeypot">
 					<?php esc_html_e('Use Honeypot.', 'gwolle-gb'); ?>
 				</label><br />
 				<span class="setting-description">
@@ -181,19 +179,19 @@ function gwolle_gb_page_settingstab_antispam() {
 					</a><br />
 					<?php
 					$current_plugins = get_option('active_plugins');
-					$wordpress_api_key = get_option('wordpress_api_key');
+					$akismet_api_key = get_option('wordpress_api_key');
 
 					// Check wether Akismet is installed and activated or not.
 					if ( ! in_array('akismet/akismet.php', $current_plugins)) {
 						echo esc_html__('Akismet is an external service by Automattic that acts as a spamfilter for guestbook entries.', 'gwolle-gb') . '<br />';
 						// Akismet is not installed and activated. Show notice with suggestion to install it.
 						esc_html_e("Akismet helps you to fight spam. It's free and easy to install. Download and install it today to stop spam in your guestbook.", 'gwolle-gb');
-					} else if ( ! $wordpress_api_key) {
-						// No WordPress API key is defined and set in the database.
+					} else if ( ! $akismet_api_key) {
+						// No Akismet API key is defined and set in the database.
 						/* translators: %1$s and %2$s are a strong element. %3$s and %4$s is for a link. */
-						echo sprintf( esc_html__('Sorry, was not able to locate your %1$sWordPress API key%2$s. You can enter it at the %3$sAkismet configuration page%4$s.', 'gwolle-gb'), '<strong>', '</strong>', '<a href="options-general.php?page=akismet-key-config">', '</a>' );
+						echo sprintf( esc_html__('Sorry, was not able to locate your %1$sAkismet API key%2$s. You can enter it at the %3$sAkismet configuration page%4$s.', 'gwolle-gb'), '<strong>', '</strong>', '<a href="options-general.php?page=akismet-key-config">', '</a>' );
 					} else {
-						// Akismet is installed and activated and a WordPress API key exists (we just assume it is valid).
+						// Akismet is installed and activated and a Akismet API key exists (we just assume it is valid).
 						echo '<input ';
 						if ( get_option( 'gwolle_gb-akismet-active', 'false' ) === 'true' ) {
 							echo 'checked="checked" ';
@@ -204,7 +202,7 @@ function gwolle_gb_page_settingstab_antispam() {
 							</label><br />';
 						esc_html_e('Akismet is an external service by Automattic that acts as a spamfilter for guestbook entries.', 'gwolle-gb');
 						echo '<br />';
-						esc_html_e('The WordPress API key has been found, so you can start using Akismet right now.', 'gwolle-gb');
+						esc_html_e('The Akismet API key has been found, so you can start using Akismet right now.', 'gwolle-gb');
 					}
 					?>
 				</span>

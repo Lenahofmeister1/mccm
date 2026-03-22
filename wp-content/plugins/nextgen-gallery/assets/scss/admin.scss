@@ -59,13 +59,31 @@
 			/**
 			* Image width and height (image is 2x so this ensures it displays correctly)
 			*/
-			max-width: 339px;
+			max-width: 239px;
 
 			/**
 			* Responsive - ensure the logo doesn't exceed the header dimensions
 			*/
 			@include mq(xs) {
 				width: 90%;
+			}
+		}
+
+		a.nextgen-logo-link{
+			outline: none;
+			border: none;
+			box-shadow: none;
+
+			&:focus {
+				outline: none;
+				border: none;
+				box-shadow: none;
+			}
+
+			&:active {
+				outline: none;
+				border: none;
+				box-shadow: none;
 			}
 		}
 	}
@@ -299,10 +317,10 @@ body[class*=" ngg-"] {
 	.ui-widget {
 
 		.ui-dialog-titlebar-close {
-			text-indent: -9999px;
 			background: none;
 			border: none;
 			box-shadow: none;
+			color:#FFFFFF;
 		}
 	}
 	#wpfooter {

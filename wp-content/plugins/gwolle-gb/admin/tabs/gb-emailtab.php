@@ -3,10 +3,8 @@
  * Settings page for the guestbook
  */
 
-// No direct calls to this script
-if ( strpos($_SERVER['PHP_SELF'], basename(__FILE__) )) {
-	die('No direct calls allowed!');
-}
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 
 
 /*
@@ -71,7 +69,7 @@ function gwolle_gb_page_settingstab_email() {
 							if ( $user_info->ID === get_current_user_id() ) {
 								$username .= ' ' . esc_html__('You', 'gwolle-gb');
 							}
-							echo '<option value="' . (int) $user_info->ID . '">' . $username . '</option>';
+							echo '<option value="' . (int) $user_info->ID . '">' . esc_html( $username ) . '</option>';
 						}
 					} ?>
 				</select><br />
@@ -92,8 +90,9 @@ function gwolle_gb_page_settingstab_email() {
 				<?php
 				// Check if function mail() exists. If not, display a hint to the user.
 				if ( ! function_exists('mail') ) {
+					/* translators: %s is for the code element */
 					echo '<p class="setting-description">' .
-						__('Sorry, but the function <code>mail()</code> required to notify you by mail is not enabled in your PHP configuration. You might want to install a WordPress plugin that uses SMTP instead of <code>mail()</code>. Or you can contact your hosting provider to change this.', 'gwolle-gb')
+						sprintf( esc_html__('Sorry, but the function %smail()%s required to notify you by mail is not enabled in your PHP configuration. You might want to install a WordPress plugin that uses SMTP instead of %smail()%s. Or you can contact your hosting provider.', 'gwolle-gb'), '<code>', '</code>', '<code>', '</code>' )
 						. '</p>';
 				} ?>
 				<select name="unsubscribe" id="unsubscribe">
@@ -117,6 +116,23 @@ function gwolle_gb_page_settingstab_email() {
 				</select><br />
 				<label for="unsubscribe"><?php esc_html_e('These users have subscribed to the notification emails.', 'gwolle-gb'); ?><br />
 				<?php esc_html_e('Select a user if you want that user to unsubscribe from the notification emails.', 'gwolle-gb'); ?></label>
+			</td>
+		</tr>
+
+		<tr>
+			<th scope="row"><label for="gwolle_gb-notify-with-spam"><?php /* translators: Settings page, option for notification email */ esc_html_e('Notify with Spam', 'gwolle-gb'); ?></label></th>
+			<td>
+				<input <?php
+					if (get_option( 'gwolle_gb-notify-with-spam', 'true') === 'true') {
+						echo 'checked="checked"';
+					} ?>
+					type="checkbox" name="gwolle_gb-notify-with-spam" id="gwolle_gb-notify-with-spam">
+				<label for="gwolle_gb-notify-with-spam">
+					<?php esc_html_e('Send a notification email even when the entry is marked as spam.', 'gwolle-gb'); ?>
+				</label><br />
+				<span class="setting-description">
+					<?php esc_html_e('This setting can help you act more quickly when the entry was marked as spam and was a false positive.', 'gwolle-gb'); ?>
+				</span>
 			</td>
 		</tr>
 

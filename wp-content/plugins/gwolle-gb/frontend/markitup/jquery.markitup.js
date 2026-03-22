@@ -685,6 +685,7 @@ var marktitup_mySettings = {
 		{name: gwolle_gb_localize.bullet, openWith:'[li]', closeWith:'[/li]', multiline:true, openBlockWith:'[ul]\n', closeBlockWith:'\n[/ul]'},
 		{name: gwolle_gb_localize.numeric, openWith:'[li]', closeWith:'[/li]', multiline:true, openBlockWith:'[ol]\n', closeBlockWith:'\n[/ol]'},
 		{name: gwolle_gb_localize.picture, key:'P', replaceWith:'[img][![' + gwolle_gb_localize.source + ':!:https://]!][/img]' },
+		{name: gwolle_gb_localize.youtube, key:'Y', replaceWith:'[youtube][![' + gwolle_gb_localize.youtube + ':!:https://]!][/youtube]' },
 		{name: gwolle_gb_localize.link, key:'L', openWith:'[url href=[![' + gwolle_gb_localize.link + ':!:https://]!]]', closeWith:'[/url]', placeHolder: gwolle_gb_localize.linktext },
 		{name: gwolle_gb_localize.clean, className:'clean', replaceWith:function(markitup) { return markitup.selection.replace(/\[(.*?)\]/g, "") } },
 		{name: gwolle_gb_localize.emoji, className:'emoji' }
@@ -734,7 +735,7 @@ jQuery(document).ready(function() {
 		emoticon = jQuery(this).attr("title");
 		jQuery.markItUp( { target:target, replaceWith:emoticon } );
 	});
-	/* Insert the Emoji symbol (main editor) */
+	/* Insert the Emoji symbol (admin main editor) */
 	jQuery('.gwolle_gb_emoji a').on( 'click', function() {
 		emoticon = jQuery(this).attr("title");
 		jQuery.markItUp( { target:'#gwolle_gb_content', replaceWith:emoticon } );

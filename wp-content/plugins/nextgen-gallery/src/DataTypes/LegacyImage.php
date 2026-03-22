@@ -9,15 +9,68 @@ use Imagely\NGG\DisplayType\Controller;
  */
 class LegacyImage {
 
-	public $_cache;         // cache of retrieved values.
-	public $_settings;      // I_Settings_Manager cache.
-	public $_storage;       // I_Gallery_Storage cache.
-	public $_galleries;     // cache of Imagely\NGG\DataTypes\Mapper (plural).
-	public $_orig_image;    // original provided image.
-	public $_orig_image_id; // original image ID.
-	public $_cache_overrides; // allow for forcing variable values.
+	/**
+	 * Cache of retrieved values.
+	 *
+	 * @var array
+	 */
+	public $_cache;
+
+	/**
+	 * I_Settings_Manager cache.
+	 *
+	 * @var mixed
+	 */
+	public $_settings;
+
+	/**
+	 * I_Gallery_Storage cache.
+	 *
+	 * @var mixed
+	 */
+	public $_storage;
+
+	/**
+	 * Cache of Imagely\NGG\DataTypes\Mapper (plural).
+	 *
+	 * @var mixed
+	 */
+	public $_galleries;
+
+	/**
+	 * Original provided image.
+	 *
+	 * @var object
+	 */
+	public $_orig_image;
+
+	/**
+	 * Original image ID.
+	 *
+	 * @var int|string
+	 */
+	public $_orig_image_id;
+
+	/**
+	 * Allow for forcing variable values.
+	 *
+	 * @var array
+	 */
+	public $_cache_overrides;
+
+	/**
+	 * Whether the image source is from NextGen Legacy or NextGen.
+	 *
+	 * @var bool
+	 */
 	public $_legacy = false;
-	public $_displayed_gallery; // cached object.
+
+	/**
+	 * Cached displayed gallery object.
+	 *
+	 * @var object|null
+	 */
+	public $_displayed_gallery;
 
 	/**
 	 * Constructor. Converts the image class into an array and fills from defaults any missing values
@@ -116,7 +169,7 @@ class LegacyImage {
 		// at the bottom we default to returning $this->_cache[$name].
 		switch ( $name ) {
 			case 'alttext':
-				$this->_cache['alttext'] = ( empty( $this->_cache['alttext'] ) ) ? ' ' : html_entity_decode( stripslashes( $this->_cache['alttext'] ) );
+				$this->_cache['alttext'] = ( empty( $this->_cache['alttext'] ) ) ? ' ' : \Imagely\NGG\Display\I18N::ngg_sanitize_text_alt_title_desc( $this->_cache['alttext'] );
 				return $this->_cache['alttext'];
 
 			case 'author':
@@ -125,7 +178,7 @@ class LegacyImage {
 				return $this->_cache['author'];
 
 			case 'caption':
-				$caption = html_entity_decode( stripslashes( $this->__get( 'description' ) ) );
+				$caption = \Imagely\NGG\Display\I18N::ngg_sanitize_text_alt_title_desc( $this->__get( 'description' ) );
 				if ( empty( $caption ) ) {
 					$caption = '&nbsp;';
 				}
@@ -133,7 +186,7 @@ class LegacyImage {
 				return $this->_cache['caption'];
 
 			case 'description':
-				$this->_cache['description'] = ( empty( $this->_cache['description'] ) ) ? ' ' : html_entity_decode( stripslashes( $this->_cache['description'] ) );
+				$this->_cache['description'] = ( empty( $this->_cache['description'] ) ) ? ' ' : \Imagely\NGG\Display\I18N::ngg_sanitize_text_alt_title_desc( $this->_cache['description'] );
 				return $this->_cache['description'];
 
 			case 'galdesc':
@@ -154,9 +207,8 @@ class LegacyImage {
 
 			case 'imageHTML':
 				$tmp                       = '<a href="' . $this->__get( 'imageURL' ) . '" title="'
-					. htmlspecialchars( stripslashes( $this->__get( 'description' ) ) )
-					. '" ' . $this->get_thumbcode( $this->__get( 'name' ) ) . '>' . '<img alt="' . $this->__get( 'alttext' )
-					. '" src="' . $this->__get( 'imageURL' ) . '"/>' . '</a>';
+					. esc_attr( $this->__get( 'description' ) )
+					. '" ' . $this->get_thumbcode( $this->__get( 'name' ) ) . '><img alt="' . esc_attr( $this->__get( 'alttext' ) ) . '" src="' . $this->__get( 'imageURL' ) . '"/></a>';
 				$this->_cache['href']      = $tmp;
 				$this->_cache['imageHTML'] = $tmp;
 				return $this->_cache['imageHTML'];
@@ -172,7 +224,7 @@ class LegacyImage {
 				return $this->_cache['imageURL'];
 
 			case 'linktitle':
-				$this->_cache['linktitle'] = htmlspecialchars( stripslashes( $this->__get( 'description' ) ) );
+				$this->_cache['linktitle'] = htmlspecialchars( stripslashes( $this->__get( 'description' ) ?? '' ) );
 				return $this->_cache['linktitle'];
 
 			case 'name':
@@ -256,8 +308,8 @@ class LegacyImage {
 			case 'thumbHTML':
 				$tmp                       = '<a href="' . $this->__get( 'imageURL' ) . '" title="'
 					. htmlspecialchars( stripslashes( $this->__get( 'description' ) ) )
-					. '" ' . $this->get_thumbcode( $this->__get( 'name' ) ) . '>' . '<img alt="' . $this->__get( 'alttext' )
-					. '" src="' . $this->thumbURL . '"/>' . '</a>';
+					. '" ' . $this->get_thumbcode( $this->__get( 'name' ) ) . '><img alt="' . $this->__get( 'alttext' )
+					. '" src="' . $this->thumbURL . '"/></a>';
 				$this->_cache['href']      = $tmp;
 				$this->_cache['thumbHTML'] = $tmp;
 				return $this->_cache['thumbHTML'];
@@ -311,7 +363,7 @@ class LegacyImage {
 				return $this->__get( 'thumbnailURL' );
 
 			case 'title':
-				$this->_cache['title'] = stripslashes( $this->__get( 'name' ) );
+				$this->_cache['title'] = stripslashes( $this->__get( 'name' ) ?? '' );
 				return $this->_cache['title'];
 
 			case 'url':
@@ -409,8 +461,8 @@ class LegacyImage {
 		$retval .= ' data-image-id="' . $this->__get( 'id' ) . '"';
 		$retval .= ' data-src="' . $this->__get( 'imageURL' ) . '"';
 		$retval .= ' data-thumbnail="' . $this->__get( 'thumbnailURL' ) . '"';
-		$retval .= ' data-title="' . esc_attr( $this->__get( 'alttext' ) ) . '"';
-		$retval .= ' data-description="' . esc_attr( $this->__get( 'description' ) ) . '"';
+		$retval .= ' data-title="' . \Imagely\NGG\Display\I18N::ngg_sanitize_text_alt_title_desc( $this->__get( 'alttext' ) ) . '"';
+		$retval .= ' data-description="' . \Imagely\NGG\Display\I18N::ngg_sanitize_text_alt_title_desc( $this->__get( 'description' ) ) . '"';
 
 		$this->_cache['thumbcode'] = $retval;
 		return $retval;
@@ -453,9 +505,11 @@ class LegacyImage {
 		if ( ! is_array( $mode ) ) {
 			$mode = explode( ',', $mode );
 		}
+		// phpcs:ignore WordPress.PHP.StrictInArray.MissingTrueStrict
 		if ( in_array( 'web20', $mode ) ) {
 			$display_reflection = true;
 		}
+		// phpcs:ignore WordPress.PHP.StrictInArray.MissingTrueStrict
 		if ( in_array( 'watermark', $mode ) ) {
 			$display_watermark = true;
 		}

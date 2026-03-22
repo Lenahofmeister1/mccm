@@ -3,10 +3,8 @@
  * Settings page for the guestbook
  */
 
-// No direct calls to this script
-if ( strpos($_SERVER['PHP_SELF'], basename(__FILE__) )) {
-	die('No direct calls allowed!');
-}
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 
 
 /*
@@ -43,7 +41,7 @@ function gwolle_gb_page_settingstab_debug() {
 		/* Check Nonce */
 		$verified = false;
 		if ( isset($_POST['gwolle_gb_page_settings_debugtab']) ) {
-			$verified = wp_verify_nonce( $_POST['gwolle_gb_page_settings_debugtab'], 'gwolle_gb_page_settings_debugtab' );
+			$verified = wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['gwolle_gb_page_settings_debugtab'] ) ), 'gwolle_gb_page_settings_debugtab' );
 		}
 		if ( $verified && isset( $_POST['gwolle_gb_debug'] ) ) {
 			// Save test entries
@@ -80,7 +78,7 @@ function gwolle_gb_page_settingstab_debug() {
 		?>
 
 		<tr>
-			<th scope="row"><label for="blogdescription"><?php esc_html_e('Test', 'gwolle-gb'); ?></label></th>
+			<th scope="row"><label for="gwolle_gb_debug"><?php esc_html_e('Test', 'gwolle-gb'); ?></label></th>
 			<td>
 				<p>
 				<?php esc_html_e('This test will attempt to save two test entries, one with standard text and one with Emoji.', 'gwolle-gb'); ?>

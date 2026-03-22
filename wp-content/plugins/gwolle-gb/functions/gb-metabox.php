@@ -1,10 +1,8 @@
 <?php
 
 
-// No direct calls to this script
-if ( strpos($_SERVER['PHP_SELF'], basename(__FILE__) )) {
-	die('No direct calls allowed!');
-}
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 
 
 /*
@@ -20,8 +18,8 @@ function gwolle_gb_entry_metabox_lines_edit_link( $gb_metabox, $entry ) {
 
 	if ( current_user_can('gwolle_gb_moderate_comments') ) {
 		$gb_metabox .= '
-					<div class="gb-metabox-line">
-						<a class="gwolle_gb_edit_link gwolle-gb-edit-link" href="' . admin_url('admin.php?page=' . GWOLLE_GB_FOLDER . '/editor.php&amp;entry_id=' . $entry->get_id() ) . '" title="' . esc_attr__('Edit entry', 'gwolle-gb') . '">' . esc_html__('Edit in Editor', 'gwolle-gb') . '</a>
+					<div class="gb-metabox-line gb-metabox-line-edit">
+						<a class="gwolle-gb-edit-link" href="' . admin_url('admin.php?page=' . GWOLLE_GB_FOLDER . '/editor.php&amp;entry_id=' . $entry->get_id() ) . '" title="' . esc_attr__('Edit entry', 'gwolle-gb') . '">' . esc_html__('Edit in Editor', 'gwolle-gb') . '</a>
 					</div>';
 	}
 	return $gb_metabox;
@@ -42,14 +40,12 @@ add_filter( 'gwolle_gb_entry_metabox_lines', 'gwolle_gb_entry_metabox_lines_edit
  */
 function gwolle_gb_entry_metabox_lines_ajax_icon( $gb_metabox, $entry ) {
 
-	if ( current_user_can('gwolle_gb_moderate_comments') ) {
-		if ( $gb_metabox ) {
+	if ( $gb_metabox ) {
 
-			$gb_metabox .= '
-					<div class="gb-metabox-line gb-metabox-line-ajax">
-						' . esc_html__('Please wait...', 'gwolle-gb') . '
-					</div>';
-		}
+		$gb_metabox .= '
+				<div class="gb-metabox-line gb-metabox-line-ajax">
+					' . esc_html__('Please wait...', 'gwolle-gb') . '
+				</div>';
 	}
 	return $gb_metabox;
 

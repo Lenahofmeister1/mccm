@@ -6,10 +6,8 @@
  */
 
 
-// No direct calls to this script
-if ( strpos($_SERVER['PHP_SELF'], basename(__FILE__) )) {
-	die('No direct calls allowed!');
-}
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 
 
 /*
@@ -61,13 +59,11 @@ function get_gwolle_gb( $atts ) {
 
 	if ( is_singular() && is_main_query() && ! is_admin() ) {
 		$id = get_the_ID();
-		update_post_meta( $id, 'gwolle_gb_book_id', $shortcode_atts['book_id'] );
+		update_post_meta( $id, 'gwolle_gb_book_id', (int) $shortcode_atts['book_id'] );
 	}
 
 	// Load Frontend CSS in Footer, only when it's active
-	wp_enqueue_style('gwolle_gb_frontend_css');
-	//wp_enqueue_script('jquery');
-	wp_enqueue_script('gwolle_gb_frontend_js');
+	gwolle_gb_enqueue();
 
 
 	// Define $output
@@ -108,14 +104,11 @@ function get_gwolle_gb_write( $atts ) {
 
 	if ( is_singular() && is_main_query() && ! is_admin() ) {
 		$id = get_the_ID();
-		update_post_meta( $id, 'gwolle_gb_book_id', $shortcode_atts['book_id'] );
+		update_post_meta( $id, 'gwolle_gb_book_id', (int) $shortcode_atts['book_id'] );
 	}
 
 	// Load Frontend CSS in Footer, only when it's active
-	wp_enqueue_style('gwolle_gb_frontend_css');
-	//wp_enqueue_script('jquery');
-	wp_enqueue_script('gwolle_gb_frontend_js');
-
+	gwolle_gb_enqueue();
 
 	// Define $output
 	$output = '<div class="gwolle-gb">';
@@ -153,14 +146,11 @@ function get_gwolle_gb_read( $atts ) {
 	}
 	if ( is_singular() && is_main_query() && ! is_admin() ) {
 		$id = get_the_ID();
-		update_post_meta( $id, 'gwolle_gb_book_id', $shortcode_atts['book_id'] );
+		update_post_meta( $id, 'gwolle_gb_book_id', (int) $shortcode_atts['book_id'] );
 	}
 
 	// Load Frontend CSS in Footer, only when it's active
-	wp_enqueue_style('gwolle_gb_frontend_css');
-	//wp_enqueue_script('jquery');
-	wp_enqueue_script('gwolle_gb_frontend_js');
-
+	gwolle_gb_enqueue();
 
 	// Define $output
 	$output = '<div class="gwolle-gb">';
